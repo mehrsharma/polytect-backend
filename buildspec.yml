@@ -10,6 +10,7 @@ phases:
   build:
     commands:
       - echo "Building application..."
+      - python3 api.py
       # Optionally, you can run any additional build commands here
 artifacts:
   files:
