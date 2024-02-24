@@ -36,10 +36,9 @@ def single_classification():
     if (request.files['image']): 
         file = request.files['image']
         image = populate_formatted_image_array(file)
-
-    prediction = model.predict(image)
-    predicted_labels = np.argmax(prediction, axis=1)
-    return 'hydrophobicity classification of {}'.format(predicted_labels[0])
+        prediction = model.predict(image)
+        predicted_labels = np.argmax(prediction, axis=1)
+        return 'hydrophobicity classification of {}'.format(predicted_labels[0])
 
 
 @application.route('/bulk-classify') #, methods=['POST']
