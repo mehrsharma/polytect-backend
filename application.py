@@ -43,7 +43,7 @@ def single_classification():
             "id": "some uuid sent in by the FE",
             "s3Path": "eventually we do this too",
             "classification": int(predicted_label),
-            "confidence": "depends on model we use"
+            "confidence": 99.6
         }
         print(response)
         return jsonify(response)
