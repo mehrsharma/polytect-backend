@@ -23,38 +23,22 @@ def single_classification():
     #     # handle error when no image is provided
     #     return 'No image found', 400
 
+    if (request.files['image']): 
+        file = request.files['image']
+        image_id = request.form.get("image_ids")
+        # print(file)
 
-    # once new json format kicks in on the FE side 
-    # if (request.files['images']): 
-        # {
-        #     "images": [
-        #         {
-        #             "id": "######",
-        #             "blob": "",
-        #         }
-        #     ]
-        # }
-        # request_json     = request.get_json()
-        # value1           = request_json.get('First_Name')
-        # value2           = request_json.get('Last_Name')
-        # image_metadata = request_json.files['images'][0]
-        # image_id = image_metadata
-    print(request.files)
-    file = request.form.get('images')
-
-    print(file)
-    print(request.files.getlist('images'))
-    # image = process_image([file])
-    # prediction = model.predict(image)
-    # predicted_label = np.argmax(prediction, axis=1)[0]
-    response = {
-        "id": "some uuid sent in by the FE",
-        "s3Path": "eventually we do this too",
-        # "classification": int(predicted_label),
-        "confidence": 99.6
-    }
-    # print(response)
-    return jsonify(response)
+        image = process_image([file])
+        prediction = model.predict(image)
+        predicted_label = np.argmax(prediction, axis=1)[0]
+        response = {
+            "id": image_id,
+            "s3Path": "eventually we do this too",
+            "classification": int(predicted_label),
+            "confidence": 99.6
+        }
+        print(response)
+        return jsonify(response)
 
 
 @application.route('/bulk-classify') #, methods=['POST']
