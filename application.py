@@ -18,7 +18,12 @@ def hello_world():
 
 @application.route('/classify', methods=['POST'])
 def single_classification():
-    if (request.files['image']): 
+
+    # if 'blob' not in request.payload:
+    #     # handle error when no image is provided
+    #     return 'No image found', 400
+
+
     # once new json format kicks in on the FE side 
     # if (request.files['images']): 
         # {
@@ -34,19 +39,22 @@ def single_classification():
         # value2           = request_json.get('Last_Name')
         # image_metadata = request_json.files['images'][0]
         # image_id = image_metadata
+    print(request.files)
+    file = request.form.get('images')
 
-        file = request.files['image']
-        image = process_image([file])
-        prediction = model.predict(image)
-        predicted_label = np.argmax(prediction, axis=1)[0]
-        response = {
-            "id": "some uuid sent in by the FE",
-            "s3Path": "eventually we do this too",
-            "classification": int(predicted_label),
-            "confidence": 99.6
-        }
-        print(response)
-        return jsonify(response)
+    print(file)
+    print(request.files.getlist('images'))
+    # image = process_image([file])
+    # prediction = model.predict(image)
+    # predicted_label = np.argmax(prediction, axis=1)[0]
+    response = {
+        "id": "some uuid sent in by the FE",
+        "s3Path": "eventually we do this too",
+        # "classification": int(predicted_label),
+        "confidence": 99.6
+    }
+    # print(response)
+    return jsonify(response)
 
 
 @application.route('/bulk-classify') #, methods=['POST']
