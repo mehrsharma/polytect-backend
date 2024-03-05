@@ -1,11 +1,14 @@
 import numpy as np
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from keras.models import load_model
 from PIL import Image
 import numpy as np
 from efficientnet.tfkeras import EfficientNetB0
+from flask_cors import CORS
+import urllib.request
 
 application = Flask(__name__)
+CORS(application)
 
 model = load_model('cnn_model.h5')
 labels = [1, 2, 3, 4, 5, 6] # only possible classification results
@@ -22,11 +25,9 @@ def single_classification():
     # if 'blob' not in request.payload:
     #     # handle error when no image is provided
     #     return 'No image found', 400
-
-    if (request.files['image']): 
-        file = request.files['image']
+    if (request.form.get('image')): 
+        file = urllib.request.urlopen(request.form.get('image'))
         image_id = request.form.get("image_ids")
-        # print(file)
 
         image = process_image([file])
         prediction = model.predict(image)
@@ -39,6 +40,7 @@ def single_classification():
         }
         print(response)
         return jsonify(response)
+    return jsonify({})
 
 
 @application.route('/bulk-classify') #, methods=['POST']
