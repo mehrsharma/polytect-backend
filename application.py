@@ -7,9 +7,12 @@ from efficientnet.tfkeras import EfficientNetB0
 from flask_cors import CORS
 import urllib.request
 
-
 application = Flask(__name__)
 CORS(application)
+
+IMAGE_WIDTH = 32
+IMAGE_HEIGHT = 32
+model = load_model('cnn_model_v2.h5')
 
 @application.route('/')
 def hello_world():
@@ -39,13 +42,13 @@ def single_classification():
     return jsonify({})
 
 
-@application.route('/bulk-classify') #, methods=['POST']
-def bulk_classification():
-    image_data = ['test_images/mid_rated.JPG', 'test_images/highly_rated.JPG', 'test_images/low_rated.JPG', 'test_images/mid_rated.JPG']
-    image = process_image(image_data)
-    prediction = model.predict(image)
-    predicted_labels = np.argmax(prediction, axis=1)
-    return 'hydrophobicity classification {}'.format(predicted_labels)
+# @application.route('/bulk-classify') #, methods=['POST']
+# def bulk_classification():
+#     image_data = ['test_images/mid_rated.JPG', 'test_images/highly_rated.JPG', 'test_images/low_rated.JPG', 'test_images/mid_rated.JPG']
+#     image = process_image(image_data)
+#     prediction = model.predict(image)
+#     predicted_labels = np.argmax(prediction, axis=1)
+#     return 'hydrophobicity classification {}'.format(predicted_labels)
 
 
 def process_image(selected_images: list):
