@@ -7,13 +7,9 @@ from efficientnet.tfkeras import EfficientNetB0
 from flask_cors import CORS
 import urllib.request
 
+
 application = Flask(__name__)
 CORS(application)
-
-model = load_model('cnn_model.h5')
-labels = [1, 2, 3, 4, 5, 6] # only possible classification results
-IMAGE_WIDTH = 32
-IMAGE_HEIGHT = 32
 
 @application.route('/')
 def hello_world():
@@ -66,7 +62,7 @@ def process_image(selected_images: list):
         count += 1
     image_array = np.array(image_array)
     return image_array
-
+  
 
 if __name__ == '__main__':
     application.run(debug=True)
