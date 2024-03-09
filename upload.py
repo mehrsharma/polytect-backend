@@ -31,7 +31,7 @@ with open(file_path, 'rb') as file:
 
 # Check the response
 if response.status_code == 201:
-    print("File uploaded successfully!")
+    print(response.text)
 else:
     print("Failed to upload file. Error:", response.text)
 
@@ -55,6 +55,6 @@ with open(file_path, 'rb') as file:
 
 # Check the response
 if response.status_code == 201:
-    print("File uploaded successfully!")
+    print(response.text)
 else:
     print("Failed to upload file. Error:", response.text)
