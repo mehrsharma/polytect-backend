@@ -74,6 +74,8 @@ def upload_file():
 
             new_file = File(image_id=image_id, uploader_id=uploader_id, date=date, classification=classification, platform=platform, title=title)
 
+            s3_uri = f"https://{S3_BUCKET}.s3.amazonaws.com/{file.filename}"
+
             s3.upload_fileobj(
                 io.BytesIO(file_content),
                 S3_BUCKET,
@@ -86,7 +88,7 @@ def upload_file():
 
             db.session.add(new_file)
             db.session.commit()
-            return jsonify({'message': 'Upload successful'}), 201
+            return jsonify({'message': 'Upload successful', 's3_uri': s3_uri}), 201
     except IntegrityError:
         return jsonify({'error': 'File already exists'}), 400
     except Exception as e:
