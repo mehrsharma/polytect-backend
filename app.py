@@ -5,8 +5,12 @@ import os
 import boto3
 import io
 from sqlalchemy.exc import IntegrityError
+import urllib
+from flask_cors import CORS
+import base64
 
 app = Flask(__name__)
+CORS(app)
 
 S3_BUCKET = 'vincent-testing'
 S3_ACCESS_KEY = os.environ.get('S3_ACCESS_KEY')
@@ -25,29 +29,33 @@ def create_app():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if 'file' not in request.files:
+    if 'image' not in request.form:
         return jsonify({'error': 'No file part'}), 400
     
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-    
+    data = request.form.get('image')
+    file = urllib.request.urlopen(data)
+
+    if 'data:' in data and ';base64,' in data:
+        data = data.split(';base64,')[1]
+
+    decoded = base64.b64decode(data)
+
     file_content = file.read()
     print("file size outside", len(file_content))
-    
+
     try:
         if request.method == 'POST':
             image_id = hash(file_content)
 
-            s3_uri = f"https://{S3_BUCKET}.s3.amazonaws.com/{file.filename+str(image_id)}"
+            s3_uri = f"https://{S3_BUCKET}.s3.amazonaws.com/{str(image_id)}.jpeg"
 
             s3.upload_fileobj(
-                io.BytesIO(file_content),
+                io.BytesIO(decoded),
                 S3_BUCKET,
-                file.filename+str(image_id),
+                f"{str(image_id)}.jpeg",
                 ExtraArgs={
                     "ACL": "public-read",
-                    "ContentType": file.content_type
+                    "ContentType": "image/jpeg"
                 }
             )
 
