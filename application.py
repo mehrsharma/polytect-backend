@@ -131,4 +131,4 @@ def process_image(selected_images: list):
     return image_array
   
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)
