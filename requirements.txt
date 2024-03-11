@@ -13,3 +13,4 @@ gunicorn
 flask-cors
 sqlalchemy
 boto3
+flask_sqlalchemy
