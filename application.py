@@ -36,10 +36,7 @@ s3 = boto3.client(
    region_name=S3_REGION
 )
 
-def create_app():
-    return app
-
-@app.route('/upload', methods=['POST'])
+@application.route('/upload', methods=['POST'])
 def upload_file():
     if 'image' not in request.form:
         return jsonify({'error': 'No file part'}), 400
@@ -77,11 +74,11 @@ def upload_file():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/uploads/<filename>')
+@application.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory('', filename)
 
-@app.route('/')
+@application.route('/')
 def index():
     return 'Hello, World 0!'
 
