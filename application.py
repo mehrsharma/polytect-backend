@@ -36,7 +36,6 @@ s3 = boto3.client(
    region_name=S3_REGION
 )
 
-
 @application.route('/upload', methods=['POST'])
 def upload_file():
     if 'image' not in request.form:
