@@ -1,3 +1,4 @@
+import math
 from flask import Flask, request, redirect, url_for, send_from_directory, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -84,36 +85,23 @@ def index():
 
 @application.route('/classify', methods=['POST'])
 def single_classification():
-
-    # if 'blob' not in request.payload:
-    #     # handle error when no image is provided
-    #     return 'No image found', 400
     if (request.form.get('image')): 
         file = urllib.request.urlopen(request.form.get('image'))
         image_id = request.form.get("image_ids")
 
         image = process_image([file])
         prediction = model.predict(image)
+        conf = truncate(float(np.max(prediction, axis=1)[0])*100, 2)
         predicted_label = np.argmax(prediction, axis=1)[0]
         response = {
             "id": image_id,
             "s3Path": "eventually we do this too",
             "classification": int(predicted_label),
-            "confidence": 99.6
+            "confidence": conf
         }
         print(response)
         return jsonify(response)
     return jsonify({})
-
-
-# @application.route('/bulk-classify') #, methods=['POST']
-# def bulk_classification():
-#     image_data = ['test_images/mid_rated.JPG', 'test_images/highly_rated.JPG', 'test_images/low_rated.JPG', 'test_images/mid_rated.JPG']
-#     image = process_image(image_data)
-#     prediction = model.predict(image)
-#     predicted_labels = np.argmax(prediction, axis=1)
-#     return 'hydrophobicity classification {}'.format(predicted_labels)
-
 
 def process_image(selected_images: list):
     image_array = []
@@ -129,6 +117,9 @@ def process_image(selected_images: list):
         count += 1
     image_array = np.array(image_array)
     return image_array
-  
+
+def truncate(f, n):
+    return math.floor(f * 10 ** n) / 10 ** n
+
 if __name__ == '__main__':
     application.run(debug=True)
